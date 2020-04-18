@@ -14,19 +14,6 @@
                     <h3 class="card-title text-white">Contact List</h3>
                 </a>
             </div>
-            {{-- <div class="col-md-3"> --}}
-                {{-- php search function --}}
-            {{-- <form action="/search" method="POST" role="search">
-                    @csrf
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="query" placeholder="Search"> <span class="input-group-btn">
-                            <button type="submit" class="btn btn-default">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div> --}}
             <div class="col-md-1">
                 <a href="{{ route('contacts.create')}}" title="Add Contact" class="btn btn-info float-right"><i class="fas fa-plus fa-2x"></i></a>
             </div>

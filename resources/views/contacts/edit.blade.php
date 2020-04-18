@@ -11,10 +11,15 @@
             @csrf
             @method('PUT')
             <div class="form-row">
-                <div class="form-group col-md-4">
+                @input_text([
+                    'label' => 'First Name',
+                    'input' => 'firstname',
+                    'data' => $contact ?? null
+                ])
+                {{-- <div class="form-group col-md-4">
                     <label for="">First Name</label>
-                <input type="text" class="form-control" name="firstname" id="" placeholder="Required" value="{{$contact->firstname}}" required>
-                </div>
+                <input type="text" class="form-control" name="firstname" id="" placeholder="Required" value="{{$contact->firstname}}">
+                </div> --}}
                 <div class="form-group col-md-4">
                     <label for="">Last Name</label>
                     <input type="text" class="form-control" name="lastname" id="" placeholder="Required" value="{{$contact->lastname}}" required>

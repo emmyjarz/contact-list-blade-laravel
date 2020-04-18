@@ -11,7 +11,7 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="">First Name</label>
-                    <input type="text" class="form-control" name="firstname" id="" placeholder="Required" required>
+                    <input type="text" class="form-control" name="firstname" id="" placeholder="Required">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="">Last Name</label>
