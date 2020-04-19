@@ -122,6 +122,5 @@
             </div>
         </form>
     </div>
-    @include('layouts.errors')
 </div>
 @endsection

@@ -18,7 +18,7 @@ class AlterContactRemoveAddress extends Migration
             $table->dropColumn('address2');
             $table->dropColumn('city');
             $table->dropColumn('state');
-            $table->dropColumn('zip', 5);
+            $table->dropColumn('zip');
         });
         Schema::create('locations', function (Blueprint $table) {
             $table->increments('id');

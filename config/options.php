@@ -1,6 +1,6 @@
 <?php
 return [
-    'state' => [
+    'states' => [
         "AL" => 'Alabama',
         "AK" => 'Alaska',
         "AZ" => 'Arizona',

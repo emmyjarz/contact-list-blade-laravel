@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Contact;
 use Mapper;
+use View;
 
 class ContactController extends Controller
 {
+    public function __construct()
+    {
+        View::share('URL_HTTPS', env('APP_SECURE'));
+    }
     /**
      * Display a listing of the resource.
      *
