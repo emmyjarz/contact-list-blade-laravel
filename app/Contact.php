@@ -14,6 +14,10 @@ class Contact extends Model
         'phone',
         'birthday',
     ];
+    public function address()
+    {
+        return $this->hasOne('App\Address');
+    }
     public static function phoneFormat($phone)
     {
         // substr_replace(string,replacement,start,length)

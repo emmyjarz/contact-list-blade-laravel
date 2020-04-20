@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Form;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::include('inputs.select', 'input_select');
-        Blade::include('inputs.text', 'input_text');
+        Blade::include('inputs.input', 'input');
     }
 
     /**

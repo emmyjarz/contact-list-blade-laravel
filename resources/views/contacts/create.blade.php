@@ -6,10 +6,9 @@
         <h3 class="card-title text-white">Add Contact</h3>
     </div>
     <div class="card-body">
-    <form action="{{route('contacts.store')}}"method="POST">
-            @csrf
+        {!! Form::open(['route' => 'contacts.store'])!!}
             @include('contacts.form')
-        </form>
+        {!! Form::close() !!}
     </div>
 </div>
 @endsection

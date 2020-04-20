@@ -20,10 +20,9 @@ class AlterContactRemoveAddress extends Migration
             $table->dropColumn('state');
             $table->dropColumn('zip');
         });
-        Schema::create('locations', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('contact_id');
-            $table->string('type');
             $table->string('address1');
             $table->string('address2')->nullable();
             $table->string('city');
@@ -40,7 +39,7 @@ class AlterContactRemoveAddress extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('locations');
+        Schema::dropIfExists('addresses');
         Schema::table('contacts', function (Blueprint $table) {
             $table->string('address1')->after('birthday');
             $table->string('address2')->nullable()->after('address1');
