@@ -38,27 +38,27 @@
                     <td>{{ucwords($contact->firstname)}}</td>
                     <td>{{ucwords($contact->lastname)}}</td>
                     <td>{{$contact->email}}</td>
-                    <td>{{$contact->phone}}</td>
+                    <td>
+                        @if(!empty($contact->phone))
+                        {{App\Contact::phoneFormat($contact->phone)}}
+                        @endif
+                    </td>
                     <td>
                         {{-- details --}}
-                        <form class="float-left ml-2" action="{{route('contacts.show', $contact->id)}}" method="GET">
-                            @csrf
-                            <button type='submit' class="no-background">
-                                    <i class="fas fa-info-circle" title="Details"></i>
-                            </button>
-                        </form>
+                        <a class="float-left mr-2" href="{{route('contacts.show', $contact->id)}}"><i class="fas fa-info-circle" title="Details"></i></a>
                         {{-- update --}}
-                        <form class="float-left ml-2">
-                            <a href="{{route('contacts.edit', $contact->id)}}" title="Edit"><i class="fas fa-edit"></i></a>
-                        </form>
+                            <a class="float-left mr-2" href="{{route('contacts.edit', $contact->id)}}" title="Edit"><i class="fas fa-edit"></i></a>
                         {{-- delete --}}
-                        <form class="float-left ml-2" action="{{route('contacts.destroy', $contact->id)}}" method="POST">
-                            @csrf
-                            @method('DELETE')
+                        {!! Form::open([
+                            'route' => [
+                                'contacts.destroy', $contact->id
+                            ], 
+                            'method' => 'delete'
+                            ]) !!}
                             <button type='submit' class="delete-button no-background" title="Delete">
                                 <i class="fas fa-trash-alt text-danger" aria-hidden="true"></i>
                             </button>
-                        </form>
+                        {!! Form::close() !!}
                     </td>
                 </tr>
                 @endforeach

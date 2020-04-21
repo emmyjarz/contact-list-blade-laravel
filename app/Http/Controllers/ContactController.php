@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Contact;
+use App\Address;
 use Mapper;
 use View;
 
@@ -21,14 +22,9 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contacts = Contact::orderBy('firstname', 'asc')->get();
-
-        foreach ($contacts as $contact) {
-            if ($contact->phone != '') {
-                $contact->phone = Contact::phoneFormat($contact->phone);
-            }
-        }
-        return view('contacts.index', compact('contacts'));
+        return view('contacts.index')->with([
+            'contacts' => Contact::orderBy('firstname', 'asc')->get()
+        ]);
     }
 
     /**
@@ -49,23 +45,29 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
+        //Validation
         $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
-            'email' => 'required|unique:contacts'
+            'email' => 'required|email|unique:contacts',
+            'address1' => 'required_with:zip',
+            'zip' => 'required_with:address1|digits:5|nullable',
         ]);
-        Contact::create([
-            'firstname' => trim(strtolower(request()->input('firstname'))),
-            'lastname' => trim(strtolower(request()->input('lastname'))),
-            'email' => trim(strtolower(request()->input('email'))),
-            'phone' => trim((request()->input('phone'))),
-            'birthday' => request()->input('birthday'),
-            'address1' => trim(strtolower(request()->input('address1'))),
-            'address2' => trim(strtolower(request()->input('address2'))),
-            'city' => trim(strtolower(request()->input('city'))),
-            'state' => request()->input('state'),
-            'zip' => request()->input('zip'),
-        ]);
+
+        $post = $request->all();
+
+        try {
+            //Create contact
+            $contact = Contact::create($post);
+
+            //Create address
+            if (!empty($post['address1']) && !empty($post['zip'])) {
+                $contact->address()->create($post);
+            }
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
+        }
+
         session()->flash('message', 'Your contact has been added.');
         return redirect('/');
     }
@@ -78,22 +80,24 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
-        $address = $contact->address1 . " " . $contact->address2 . " " . $contact->city . " " . $contact->state . " " . $contact->zip;
-        $prepAddr = str_replace(' ', '+', $address);
-        $geocode = file_get_contents("https://maps.google.com/maps/api/geocode/json?address=$prepAddr&sensor=false&key=" . env('GOOGLE_API_KEY'));
-        $output = json_decode($geocode);
-        if (count($output->results) == 0) {
-            $lat = "34.0522342";
-            $long = "-118.2436849";
-        } else {
-            $lat = $output->results[0]->geometry->location->lat;
-            $long = $output->results[0]->geometry->location->lng;
+        try {
+            $address = $contact->address;
+
+            //Get latitude and longtitude to make google map
+            $location = Address::getLocation($address);
+            Mapper::map($location['lat'], $location['long']);
+
+            //Make phone number pretty
+            if (!empty($contact->phone)) {
+                $contact->phone = Contact::phoneFormat($contact->phone);
+            }
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
         }
-        Mapper::map($lat, $long);
-        if ($contact->phone != '') {
-            $contact->phone = Contact::phoneFormat($contact->phone);
-        }
-        return view('contacts.show', compact('contact'));
+
+        return view('contacts.show')->with([
+            'contact' => $contact
+        ]);
     }
 
     /**
@@ -116,28 +120,36 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Contact $contact)
     {
+        //Validation
         $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
             'email' => [
                 'required',
-                Rule::unique('contacts')->ignore($id),
+                'email',
+                Rule::unique('contacts')->ignore($contact->id),
             ],
+            'address1' => 'required_with:zip',
+            'zip' => 'required_with:address1|digits:5|nullable',
         ]);
-        $contact = Contact::find($id);
-        $contact->firstname = trim(strtolower(request()->input('firstname')));
-        $contact->lastname = trim(strtolower(request()->input('lastname')));
-        $contact->email = trim(strtolower(request()->input('email')));
-        $contact->phone = trim((request()->input('phone')));
-        $contact->birthday = request()->input('birthday');
-        $contact->address1 = trim(strtolower(request()->input('address1')));
-        $contact->address2 = trim(strtolower(request()->input('address2')));
-        $contact->city = trim(strtolower(request()->input('city')));
-        $contact->state = request()->input('state');
-        $contact->zip = request()->input('zip');
-        $contact->save();
+        $post = $request->all();
+
+        try {
+            //Update Contact
+            $contact->update($post);
+
+            $address = $contact->address;
+
+            //Create or Update address
+            if (!empty($post['address1']) && !empty($post['zip'])) {
+                empty($address) ?  $contact->address()->create($post) : $address->update($post);
+            }
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
+        }
+
         session()->flash('message', 'Your contact has been updated.');
         return redirect('/');
     }
@@ -148,10 +160,13 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Contact $contact)
     {
-        $contact = Contact::find($id);
-        $contact->delete();
+        try {
+            $contact->delete();
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
+        }
         return redirect('/');
     }
 }

@@ -14,6 +14,12 @@ class Contact extends Model
         'phone',
         'birthday',
     ];
+    public function delete()
+    {
+        $this->address()->delete();
+
+        return parent::delete();
+    }
     public function address()
     {
         return $this->hasOne('App\Address');
