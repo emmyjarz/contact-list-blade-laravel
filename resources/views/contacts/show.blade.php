@@ -16,27 +16,31 @@
                 <p><strong>Phone:</strong> 
                     {{$contact->phone}}
                 </p>
-                <p><strong>Birthday:</strong> 
+                <p><strong>Birthday:</strong>
+                    @if(!empty($contact->birthday)) 
                     {{Carbon\Carbon::parse($contact->birthday)->toFormattedDateString()}}
+                    @endif
                 </p>
+                @if(!empty($contact->address))
                 <p><strong>Address:</strong> 
-                    {{ucwords($contact->address1)}} {{ucwords($contact->address2)}}
+                    {{ucwords($contact->address->address1)}} {{ucwords($contact->address2)}}
                 </p>
-                <p><strong>City:</strong> 
-                    {{ucwords($contact->city)}}
+                <p><strong>City:</strong>
+                    {{ucwords($contact->address->city)}}
                 </p>
                 <p><strong>State:</strong> 
-                    {{$contact->state}}
+                    {{$contact->address->state}}
                 </p>
                 <p><strong>Zip:</strong> 
-                    {{$contact->zip}}
+                    {{$contact->address->zip}}
                 </p>
+                @endif
+                <a href="{{route ('contacts.edit', $contact->id)}}" class="btn btn-primary">Edit</a>
                 <a href="{{route ('contacts.index')}}" class="btn btn-secondary">Back</a>
             </div>
             <div class="col-md-6">
 
                 <div style="width: 400px; height: 500px;">
-
                     {!! Mapper::render() !!}
                 </div>
             </div>

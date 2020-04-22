@@ -12,5 +12,4 @@
 */
 Route::get('/', 'ContactController@index');
 Route::resource('/contacts', 'ContactController');
-Route::resource('/search', 'SearchController');
-
+Route::post('/contacts/delete', 'ContactController@delete');

@@ -14,19 +14,6 @@
                     <h3 class="card-title text-white">Contact List</h3>
                 </a>
             </div>
-            {{-- <div class="col-md-3"> --}}
-                {{-- php search function --}}
-            {{-- <form action="/search" method="POST" role="search">
-                    @csrf
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="query" placeholder="Search"> <span class="input-group-btn">
-                            <button type="submit" class="btn btn-default">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div> --}}
             <div class="col-md-1">
                 <a href="{{ route('contacts.create')}}" title="Add Contact" class="btn btn-info float-right"><i class="fas fa-plus fa-2x"></i></a>
             </div>
@@ -51,27 +38,21 @@
                     <td>{{ucwords($contact->firstname)}}</td>
                     <td>{{ucwords($contact->lastname)}}</td>
                     <td>{{$contact->email}}</td>
-                    <td>{{$contact->phone}}</td>
+                    <td>
+                        @if(!empty($contact->phone))
+                        {{App\Contact::phoneFormat($contact->phone)}}
+                        @endif
+                    </td>
                     <td>
                         {{-- details --}}
-                        <form class="float-left ml-2" action="{{route('contacts.show', $contact->id)}}" method="GET">
-                            @csrf
-                            <button type='submit' class="no-background">
-                                    <i class="fas fa-info-circle" title="Details"></i>
-                            </button>
-                        </form>
+                        <a class="float-left mr-2" href="{{route('contacts.show', $contact->id)}}"><i class="fas fa-info-circle" title="Details"></i></a>
                         {{-- update --}}
-                        <form class="float-left ml-2">
-                            <a href="{{route('contacts.edit', $contact->id)}}" title="Edit"><i class="fas fa-edit"></i></a>
-                        </form>
+                            <a class="float-left mr-2" href="{{route('contacts.edit', $contact->id)}}" title="Edit"><i class="fas fa-edit"></i></a>
                         {{-- delete --}}
-                        <form class="float-left ml-2" action="{{route('contacts.destroy', $contact->id)}}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type='submit' class="delete-button no-background" title="Delete">
+                        <a href="javascript:void(0);" rid="{{$contact->id}}" url="{{url('contacts/delete', [], $URL_HTTPS)}}" token="{{csrf_token()}}"
+                            class="delete-btn no-background" title="Delete">
                                 <i class="fas fa-trash-alt text-danger" aria-hidden="true"></i>
-                            </button>
-                        </form>
+                            </a>
                     </td>
                 </tr>
                 @endforeach
@@ -82,37 +63,7 @@
     <!-- card body -->
 </div>
 <br>
-{{-- {!! $contacts->links() !!} --}}
 @stop
-@section('script')
-<script type='text/javascript'>
-    $(document).ready(function () {
-        $('#sort').DataTable();
-        $( "th,.sorting_asc" ).last().css( "background", "none" );
-        $( "th,.sorting_desc" ).last().css( "background", "none" );
-        // $( ".no-arrow" ).last().css( "display", "none" );
-        //confirm delete
-        $('.delete-button').on('click', function (e) {
-            e.preventDefault();
-            swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.value) {
-                    e.currentTarget.form.submit();
-                    swal(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
-                }
-            })
-        })
-    })
-</script>
+@section('additional_scripts')
+<script defer src="{{url('/assets/js/index.js', [], $URL_HTTPS)}}"></script>
 @endsection
