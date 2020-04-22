@@ -23,7 +23,7 @@ class ContactController extends Controller
     public function index()
     {
         return view('contacts.index')->with([
-            'contacts' => Contact::orderBy('firstname', 'asc')->get()
+            'contacts' => Contact::all()
         ]);
     }
 
@@ -160,13 +160,18 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Contact $contact)
+    public function delete(Request $request)
     {
-        try {
-            $contact->delete();
-        } catch (\Exception $e) {
-            abort(500, $e->getMessage());
+        $result = ['status' => 1];
+
+        $contact = Contact::find($request->id);
+
+        if (empty($contact)) {
+            $result['status'] = 0;
+            return $result;
         }
-        return redirect('/');
+
+        $contact->delete();
+        return $result;
     }
 }

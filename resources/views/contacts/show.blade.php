@@ -16,8 +16,10 @@
                 <p><strong>Phone:</strong> 
                     {{$contact->phone}}
                 </p>
-                <p><strong>Birthday:</strong> 
+                <p><strong>Birthday:</strong>
+                    @if(!empty($contact->birthday)) 
                     {{Carbon\Carbon::parse($contact->birthday)->toFormattedDateString()}}
+                    @endif
                 </p>
                 @if(!empty($contact->address))
                 <p><strong>Address:</strong> 

@@ -49,16 +49,10 @@
                         {{-- update --}}
                             <a class="float-left mr-2" href="{{route('contacts.edit', $contact->id)}}" title="Edit"><i class="fas fa-edit"></i></a>
                         {{-- delete --}}
-                        {!! Form::open([
-                            'route' => [
-                                'contacts.destroy', $contact->id
-                            ], 
-                            'method' => 'delete'
-                            ]) !!}
-                            <button type='submit' class="delete-button no-background" title="Delete">
+                        <a href="javascript:void(0);" rid="{{$contact->id}}" url="{{url('contacts/delete', [], $URL_HTTPS)}}" token="{{csrf_token()}}"
+                            class="delete-btn no-background" title="Delete">
                                 <i class="fas fa-trash-alt text-danger" aria-hidden="true"></i>
-                            </button>
-                        {!! Form::close() !!}
+                            </a>
                     </td>
                 </tr>
                 @endforeach
