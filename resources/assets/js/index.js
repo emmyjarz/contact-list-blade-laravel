@@ -10,10 +10,10 @@ $(document).ready(function () {
   $(".delete-btn").on("click", function (e) {
     e.preventDefault();
 
-    const obj = $(this);
-    const url = obj.attr("url");
-    const rid = obj.attr("rid");
-    const token = obj.attr("token");
+    let obj = $(this);
+    let url = obj.attr("url");
+    let rid = obj.attr("rid");
+    let token = obj.attr("token");
 
     swal({
       title: "Are you sure?",
