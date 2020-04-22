@@ -50,6 +50,7 @@ class ContactController extends Controller
             'firstname' => 'required',
             'lastname' => 'required',
             'email' => 'required|email|unique:contacts',
+            'phone' => 'digits:10|nullable',
             'address1' => 'required_with:zip',
             'zip' => 'required_with:address1|digits:5|nullable',
         ]);
@@ -126,6 +127,7 @@ class ContactController extends Controller
         $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
+            'phone' => 'digits:10|nullable',
             'email' => [
                 'required',
                 'email',
