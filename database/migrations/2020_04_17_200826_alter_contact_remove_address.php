@@ -25,8 +25,8 @@ class AlterContactRemoveAddress extends Migration
             $table->unsignedInteger('contact_id');
             $table->string('address1');
             $table->string('address2')->nullable();
-            $table->string('city');
-            $table->string('state');
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
             $table->string('zip', 5);
             $table->timestamps();
         });
